@@ -40,7 +40,7 @@ Antes de rodar a aplicação, você precisará ter instalado no seu sistema:
 
    No script, o caminho para o executável do FFmpeg está fixo (hardcoded) para um diretório específico do Windows:
    ```python
-   'ffmpeg_location': r'C:\Users\ryanb\AppData\Local\Microsoft\WinGet\Links\ffmpeg.exe',
+   'ffmpeg_location': r'C:\Users\[user]\AppData\Local\Microsoft\WinGet\Links\ffmpeg.exe',
    ```
    **Para que o script funcione no seu computador, você precisa ajustar isso. Escolha uma das opções:**
    - **Opção 1 (Recomendada):** Se o FFmpeg já estiver adicionado às Variáveis de Ambiente (`PATH`) do seu sistema operacional, você pode simplesmente **remover ou comentar** essa linha no código. O `yt-dlp` o encontrará automaticamente.
