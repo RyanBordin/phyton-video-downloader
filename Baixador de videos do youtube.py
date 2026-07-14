@@ -38,7 +38,7 @@ elif escolha == "2":
         'format': 'bestaudio/best',
         'outtmpl': caminho_salvar,
         # Caminho do FFmpeg mantido
-        'ffmpeg_location': r'C:\Users\ryanb\AppData\Local\Microsoft\WinGet\Links\ffmpeg.exe',
+        'ffmpeg_location': r'C:\Users\[user]\AppData\Local\Microsoft\WinGet\Links\ffmpeg.exe',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
