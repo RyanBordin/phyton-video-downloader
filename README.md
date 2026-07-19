@@ -1,65 +1,60 @@
-# 🎬 Baixador Multimídia do YouTube
+# Baixador Multimídia em Phyton
 
-Um script simples e direto em Python para baixar vídeos e playlists do YouTube. O script permite escolher entre baixar apenas o vídeo (MP4) ou apenas o áudio (MP3), organizando playlists automaticamente em pastas dedicadas.
+Script em Python para baixar vídeos e playlists do YouTube, com opção de salvar apenas o vídeo (MP4) ou apenas o áudio (MP3). Playlists são organizadas automaticamente em pastas próprias. Compatível com Windows e Linux sem necessidade de ajustes manuais no código.
 
-## ✨ Funcionalidades
+## Funcionalidades
 
-- **Suporte a Playlists e Vídeos Soltos:** Reconhece automaticamente se o link é de uma playlist ou vídeo individual.
-- **Organização Automática:** Playlists são salvas em pastas próprias (com o nome da playlist) dentro do seu diretório `Downloads`.
-- **Formatos Suportados:**
-  - Vídeo: `MP4` (melhor qualidade de vídeo e áudio combinados).
-  - Áudio: `MP3` (extraído e convertido para a qualidade de 192kbps).
+- Reconhece automaticamente se o link informado é de uma playlist ou de um vídeo individual.
+- Playlists são salvas em uma pasta com o nome da playlist, dentro do diretório `Downloads` do usuário.
+- Vídeo: baixado em `MP4`, combinando a melhor faixa de vídeo e a melhor faixa de áudio disponíveis quando o FFmpeg está instalado.
+- Áudio: extraído e convertido para `MP3` a 192kbps.
+- Localiza o FFmpeg automaticamente a partir do `PATH` do sistema — não há caminhos fixos no código.
 
-## 🚀 Pré-requisitos
+## Pré-requisitos
 
-Antes de rodar a aplicação, você precisará ter instalado no seu sistema:
+- Python 3.8 ou superior
+- [FFmpeg](https://ffmpeg.org/), necessário para extração de áudio em MP3 e para combinar vídeo e áudio em qualidade máxima
 
-- **Python 3.x**
-- **[yt-dlp](https://github.com/yt-dlp/yt-dlp)** (Biblioteca principal de download)
-- **[FFmpeg](https://ffmpeg.org/)** (Essencial para extração e conversão de áudio para MP3)
+## Instalação
 
-## 🛠️ Instalação e Configuração
+1. Clone o repositório:
 
-1. **Clone o repositório (ou baixe o arquivo Python):**
    ```bash
    git clone https://github.com/SEU_USUARIO/SEU_REPOSITORIO.git
    cd SEU_REPOSITORIO
    ```
 
-2. **Instale a dependência do Python:**
+2. Instale as dependências Python:
+
    ```bash
-   pip install yt-dlp
+   pip install -r requirements.txt
    ```
 
-3. **Instale o FFmpeg:**
-   - **Windows:** Você pode instalar via [WinGet](https://learn.microsoft.com/pt-br/windows/package-manager/winget/) rodando `winget install ffmpeg` no terminal, ou baixar os binários pelo site oficial.
-   - **Linux:** `sudo apt install ffmpeg` (Debian/Ubuntu) ou `sudo pacman -S ffmpeg` (Arch).
+3. Instale o FFmpeg e garanta que ele esteja no `PATH` do sistema:
+
+   - **Windows:** `winget install ffmpeg` (ou baixe os binários em [ffmpeg.org](https://ffmpeg.org/download.html) e adicione a pasta `bin` às variáveis de ambiente `PATH`).
+   - **Linux (Debian/Ubuntu):** `sudo apt install ffmpeg`
+   - **Linux (Arch):** `sudo pacman -S ffmpeg`
    - **macOS:** `brew install ffmpeg`
 
-4. **⚠️ ATENÇÃO: Configuração do caminho do FFmpeg no código**
+   Para confirmar que a instalação foi reconhecida, rode `ffmpeg -version` em um terminal novo. Se o comando funcionar, o script encontra o FFmpeg automaticamente — não é necessário editar nada no código.
 
-   No script, o caminho para o executável do FFmpeg está fixo (hardcoded) para um diretório específico do Windows:
-   ```python
-   'ffmpeg_location': r'C:\Users\[user]\AppData\Local\Microsoft\WinGet\Links\ffmpeg.exe',
-   ```
-   **Para que o script funcione no seu computador, você precisa ajustar isso. Escolha uma das opções:**
-   - **Opção 1 (Recomendada):** Se o FFmpeg já estiver adicionado às Variáveis de Ambiente (`PATH`) do seu sistema operacional, você pode simplesmente **remover ou comentar** essa linha no código. O `yt-dlp` o encontrará automaticamente.
-   - **Opção 2:** Altere a string `r'C:\...\ffmpeg.exe'` para o caminho absoluto de onde o FFmpeg está instalado na sua máquina atual.
+## Como usar
 
-## 💻 Como Usar
+1. Execute o script:
 
-1. Execute o script via terminal:
    ```bash
-   python nome_do_script.py
+   python video_downloader.py
    ```
-2. Ao ver a mensagem `Cole o link aqui:`, insira a URL do vídeo ou da playlist do YouTube.
-3. Em seguida, escolha o formato de saída digitando o número correspondente:
-   - `[1]` para baixar o arquivo completo em **MP4**.
-   - `[2]` para extrair apenas o áudio em **MP3**.
-4. Aguarde o fim do processo. O arquivo será salvo automaticamente na pasta `Downloads` do seu usuário (ex: `~/Downloads/`).
 
-## 📄 Licença
+2. Cole a URL do vídeo ou da playlist quando solicitado.
+3. Escolha o formato de saída:
+   - `1` para baixar o vídeo completo em MP4.
+   - `2` para extrair apenas o áudio em MP3.
+4. O arquivo será salvo na pasta `Downloads` do usuário (`~/Downloads`).
 
-Sinta-se à vontade para modificar, distribuir e usar este script como base para seus próprios projetos!
-README.md
-Exibindo README.md.
+Se o FFmpeg não for encontrado, o script informa isso na tela: a opção de vídeo passa a usar uma qualidade combinada já pronta (sem juntar faixas separadas), e a opção de áudio é bloqueada, já que a conversão para MP3 depende do FFmpeg.
+
+## Licença
+
+Sinta-se à vontade para modificar, distribuir e usar este script como base para seus próprios projetos.
