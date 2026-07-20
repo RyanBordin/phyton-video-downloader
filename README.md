@@ -9,6 +9,8 @@ Script em Python para baixar vídeos e playlists do YouTube, com opção de salv
 - Vídeo: baixado em `MP4`, combinando a melhor faixa de vídeo e a melhor faixa de áudio disponíveis quando o FFmpeg está instalado.
 - Áudio: extraído e convertido para `MP3` a 192kbps.
 - Localiza o FFmpeg automaticamente a partir do `PATH` do sistema — não há caminhos fixos no código.
+- Em playlists, itens indisponíveis (privados, removidos, etc.) são pulados automaticamente e listados com o motivo ao final, em vez de interromper todo o download.
+- Suporte opcional a cookies do navegador (`--cookies-from-browser` do yt-dlp), para baixar vídeos que exigem login (ex.: restrição de idade).
 
 ## Pré-requisitos
 
@@ -51,9 +53,12 @@ Script em Python para baixar vídeos e playlists do YouTube, com opção de salv
 3. Escolha o formato de saída:
    - `1` para baixar o vídeo completo em MP4.
    - `2` para extrair apenas o áudio em MP3.
-4. O arquivo será salvo na pasta `Downloads` do usuário (`~/Downloads`).
+4. Informe o navegador de onde reaproveitar os cookies de login (`chrome`, `firefox`, `edge`, `brave`, etc.), ou deixe em branco para pular. Isso só é necessário para vídeos que exigem autenticação (ex.: restrição de idade). **Feche o navegador escolhido antes de continuar**, já que o arquivo de cookies fica bloqueado enquanto ele está aberto.
+5. O arquivo será salvo na pasta `Downloads` do usuário (`~/Downloads`).
 
 Se o FFmpeg não for encontrado, o script informa isso na tela: a opção de vídeo passa a usar uma qualidade combinada já pronta (sem juntar faixas separadas), e a opção de áudio é bloqueada, já que a conversão para MP3 depende do FFmpeg.
+
+Ao final do download de uma playlist, se algum item não puder ser baixado (vídeo privado, removido, exige login sem cookies configurados, etc.), o script exibe a lista completa dos itens que falharam junto com o motivo de cada falha — o restante da playlist é baixado normalmente.
 
 ## Licença
 

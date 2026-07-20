@@ -60,6 +60,16 @@ def montar_configuracoes(escolha: str, caminho_salvar: str):
     return None
 
 
+def obter_cookies_do_navegador():
+    """Pergunta de qual navegador reaproveitar os cookies de login (para videos
+    que exigem autenticacao). Deixar em branco pula essa etapa."""
+    navegador = input(
+        '\nNavegador para usar cookies de login (chrome, firefox, edge, brave...), '
+        'ou deixe em branco para pular: '
+    ).strip().lower()
+    return (navegador,) if navegador else None
+
+
 class ColetorDeFalhas:
     """Logger customizado do yt-dlp: deixa a saida normal passar e guarda os erros
     (que ja vem com o motivo) para listar no final, sem interromper a playlist."""
@@ -98,6 +108,12 @@ def main():
     configuracoes = montar_configuracoes(escolha, caminho_salvar)
     if configuracoes is None:
         sys.exit(1)
+
+    cookies_navegador = obter_cookies_do_navegador()
+    if cookies_navegador:
+        configuracoes['cookiesfrombrowser'] = cookies_navegador
+        print(f'\nAviso: feche o navegador "{cookies_navegador[0]}" antes de continuar, '
+              'senao o arquivo de cookies pode estar bloqueado.')
 
     coletor_de_falhas = ColetorDeFalhas()
     configuracoes['logger'] = coletor_de_falhas
