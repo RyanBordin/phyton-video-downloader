@@ -22,7 +22,7 @@ def montar_configuracoes(escolha: str, caminho_salvar: str):
     ffmpeg_path = shutil.which('ffmpeg')
 
     if escolha == '1':
-        configuracoes = {'outtmpl': caminho_salvar}
+        configuracoes = {'outtmpl': caminho_salvar, 'ignoreerrors': True}
         if ffmpeg_path:
             # Com FFmpeg disponivel, baixa o melhor video e o melhor audio
             # separadamente e junta em um unico MP4.
@@ -48,6 +48,7 @@ def montar_configuracoes(escolha: str, caminho_salvar: str):
             'format': 'bestaudio/best',
             'outtmpl': caminho_salvar,
             'ffmpeg_location': ffmpeg_path,
+            'ignoreerrors': True,
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
