@@ -60,6 +60,26 @@ def montar_configuracoes(escolha: str, caminho_salvar: str):
     return None
 
 
+class ColetorDeFalhas:
+    """Logger customizado do yt-dlp: deixa a saida normal passar e guarda os erros
+    (que ja vem com o motivo) para listar no final, sem interromper a playlist."""
+
+    def __init__(self):
+        self.falhas = []
+
+    def debug(self, msg):
+        if msg.startswith('[debug] '):
+            return
+        print(msg)
+
+    def warning(self, msg):
+        print(f'AVISO: {msg}')
+
+    def error(self, msg):
+        print(f'ERRO: {msg}')
+        self.falhas.append(msg)
+
+
 def main():
     print('=== Baixador Multimidia do YouTube ===')
     link_do_video = input('Cole o link aqui: ').strip()
@@ -79,10 +99,20 @@ def main():
     if configuracoes is None:
         sys.exit(1)
 
+    coletor_de_falhas = ColetorDeFalhas()
+    configuracoes['logger'] = coletor_de_falhas
+
     try:
         with yt_dlp.YoutubeDL(configuracoes) as motor_de_download:
             motor_de_download.download([link_do_video])
-        print('\nDownload concluido com sucesso! Verifique a sua pasta de Downloads.')
+
+        if coletor_de_falhas.falhas:
+            print(f'\nDownload concluido, mas {len(coletor_de_falhas.falhas)} '
+                  'item(ns) nao puderam ser baixados:')
+            for falha in coletor_de_falhas.falhas:
+                print(f'  - {falha}')
+        else:
+            print('\nDownload concluido com sucesso! Verifique a sua pasta de Downloads.')
     except KeyboardInterrupt:
         print('\nDownload cancelado pelo usuario.')
         sys.exit(1)
