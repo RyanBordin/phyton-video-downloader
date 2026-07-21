@@ -90,30 +90,15 @@ class ColetorDeFalhas:
         self.falhas.append(msg)
 
 
-def main():
-    print('=== Baixador Multimidia do YouTube ===')
-    link_do_video = input('Cole o link aqui: ').strip()
-
-    if not link_do_video:
-        print('\nNenhum link informado. Encerrando o programa...')
-        sys.exit(1)
-
+def baixar_link(link_do_video: str, escolha: str, cookies_navegador) -> None:
+    """Baixa um unico link (video ou playlist) com as opcoes ja definidas."""
     caminho_salvar = montar_template_de_saida(link_do_video)
-
-    print('\nO que voce deseja baixar?')
-    print('[1] Apenas o Video (MP4)')
-    print('[2] Apenas o Audio (MP3)')
-    escolha = input('Digite 1 ou 2: ').strip()
-
     configuracoes = montar_configuracoes(escolha, caminho_salvar)
     if configuracoes is None:
-        sys.exit(1)
+        return
 
-    cookies_navegador = obter_cookies_do_navegador()
     if cookies_navegador:
         configuracoes['cookiesfrombrowser'] = cookies_navegador
-        print(f'\nAviso: feche o navegador "{cookies_navegador[0]}" antes de continuar, '
-              'senao o arquivo de cookies pode estar bloqueado.')
 
     coletor_de_falhas = ColetorDeFalhas()
     configuracoes['logger'] = coletor_de_falhas
@@ -129,12 +114,46 @@ def main():
                 print(f'  - {falha}')
         else:
             print('\nDownload concluido com sucesso! Verifique a sua pasta de Downloads.')
-    except KeyboardInterrupt:
-        print('\nDownload cancelado pelo usuario.')
-        sys.exit(1)
     except Exception as e:
         print(f'\nOcorreu um erro durante o download: {e}')
+
+
+def main():
+    print('=== Baixador Multimidia do YouTube ===')
+
+    print('\nO que voce deseja baixar?')
+    print('[1] Apenas o Video (MP4)')
+    print('[2] Apenas o Audio (MP3)')
+    escolha = input('Digite 1 ou 2: ').strip()
+
+    if escolha not in ('1', '2'):
+        print('\nOpcao invalida! Encerrando o programa...')
         sys.exit(1)
+
+    if escolha == '2' and not shutil.which('ffmpeg'):
+        print('\nErro: a extracao de audio em MP3 requer o FFmpeg instalado e '
+              'disponivel no PATH do sistema.')
+        sys.exit(1)
+
+    cookies_navegador = obter_cookies_do_navegador()
+    if cookies_navegador:
+        print(f'\nAviso: feche o navegador "{cookies_navegador[0]}" antes de continuar, '
+              'senao o arquivo de cookies pode estar bloqueado.')
+
+    print('\nTudo pronto! Cole um link por vez para baixar (video ou playlist).')
+    print('Pressione Ctrl+C a qualquer momento para encerrar o programa.')
+
+    try:
+        while True:
+            link_do_video = input('\nCole o link aqui: ').strip()
+            if not link_do_video:
+                print('Nenhum link informado. Tente novamente.')
+                continue
+
+            baixar_link(link_do_video, escolha, cookies_navegador)
+    except KeyboardInterrupt:
+        print('\n\nEncerrando o programa. Ate mais!')
+        sys.exit(0)
 
 
 if __name__ == '__main__':
