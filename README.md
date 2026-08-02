@@ -1,17 +1,18 @@
-# Baixador Multimídia em Phyton
+# Baixador Multimídia em Python
 
 Script em Python para baixar vídeos e playlists do YouTube, com opção de salvar apenas o vídeo (MP4) ou apenas o áudio (MP3). Playlists são organizadas automaticamente em pastas próprias. Compatível com Windows e Linux sem necessidade de ajustes manuais no código.
 
 ## Funcionalidades
 
 - Reconhece automaticamente se o link informado é de uma playlist ou de um vídeo individual.
+- **[NOVO] Download em Lote (`links.txt`):** Adicione um arquivo de texto na pasta do projeto contendo um link por linha. O programa reconhece o arquivo automaticamente e processa toda a fila de downloads sequencialmente.
 - Playlists são salvas em uma pasta com o nome da playlist, dentro do diretório `Downloads` do usuário.
 - Vídeo: baixado em `MP4`, combinando a melhor faixa de vídeo e a melhor faixa de áudio disponíveis quando o FFmpeg está instalado.
 - Áudio: extraído e convertido para `MP3` a 192kbps.
 - Localiza o FFmpeg automaticamente a partir do `PATH` do sistema — não há caminhos fixos no código.
 - Em playlists, itens indisponíveis (privados, removidos, etc.) são pulados automaticamente e listados com o motivo ao final, em vez de interromper todo o download.
 - Suporte opcional a cookies do navegador (`--cookies-from-browser` do yt-dlp), para baixar vídeos que exigem login (ex.: restrição de idade).
-- Modo contínuo: as opções (formato e cookies) são definidas apenas uma vez. Depois disso, o script fica pedindo o próximo link automaticamente após cada download, sem precisar reiniciar o programa — ideal para baixar várias playlists ou episódios de uma série em sequência. Para encerrar, basta pressionar `Ctrl+C`.
+- Modo contínuo: Após baixar um item ou processar a fila, o script permite continuar baixando links soltos sem precisar reiniciar o programa. Para encerrar, basta pressionar `Ctrl+C`.
 
 ## Pré-requisitos
 
@@ -44,22 +45,34 @@ Script em Python para baixar vídeos e playlists do YouTube, com opção de salv
 
 ## Como usar
 
-1. Execute o script:
+### 1. Preparação
+Execute o script no terminal:
+```bash
+python video_downloader.py
+```
+Escolha o formato de saída (`1` para MP4 ou `2` para MP3) e informe o navegador para reaproveitar cookies (opcional, para vídeos com restrição).
 
-   ```bash
-   python video_downloader.py
-   ```
+### 2. Escolha o Modo de Download
 
-2. Escolha o formato de saída:
-   - `1` para baixar o vídeo completo em MP4.
-   - `2` para extrair apenas o áudio em MP3.
-3. Informe o navegador de onde reaproveitar os cookies de login (`chrome`, `firefox`, `edge`, `brave`, etc.), ou deixe em branco para pular. Isso só é necessário para vídeos que exigem autenticação (ex.: restrição de idade). **Feche o navegador escolhido antes de continuar**, já que o arquivo de cookies fica bloqueado enquanto ele está aberto.
-4. Cole a URL do vídeo ou da playlist quando solicitado. O arquivo será salvo na pasta `Downloads` do usuário (`~/Downloads`).
-5. Ao terminar o download, o script pede automaticamente o próximo link — repita o passo 4 quantas vezes quiser, sem precisar reiniciar o programa. Quando não houver mais nada para baixar, pressione `Ctrl+C` para encerrar.
+#### Modo em Lote (Recomendado para múltiplos arquivos)
+Se você tiver vários arquivos para baixar:
+1. Crie um arquivo chamado `links.txt` na mesma pasta do script.
+2. Cole os links dentro do arquivo, colocando **um link por linha** (pode misturar links de vídeos e playlists).
+3. Ao rodar o script, ele detectará o arquivo e perguntará: `"Arquivo links.txt encontrado na pasta! Deseja baixar os links listados nele? (s/n)"`.
+4. Digite `s`. O programa vai baixar todos os itens automaticamente. 
+5. Ao terminar, ele perguntará se você quer continuar baixando mais coisas manualmente.
 
-Se o FFmpeg não for encontrado, o script informa isso na tela: a opção de vídeo passa a usar uma qualidade combinada já pronta (sem juntar faixas separadas), e a opção de áudio é bloqueada, já que a conversão para MP3 depende do FFmpeg.
+#### Modo Manual (Tradicional)
+Se não houver um `links.txt` na pasta ou se você digitar `n` na detecção:
+1. O script pedirá para você colar a URL diretamente no terminal.
+2. O arquivo será salvo na sua pasta `Downloads` (`~/Downloads`).
+3. Ao terminar, ele pedirá um novo link. Repita quantas vezes quiser ou pressione `Ctrl+C` para encerrar.
 
-Ao final do download de uma playlist, se algum item não puder ser baixado (vídeo privado, removido, exige login sem cookies configurados, etc.), o script exibe a lista completa dos itens que falharam junto com o motivo de cada falha — o restante da playlist é baixado normalmente, e o programa segue pronto para receber o próximo link.
+---
+
+**Erros Comuns:**
+- Se o FFmpeg não for encontrado, a opção de vídeo baixa uma qualidade combinada menor e a de áudio é bloqueada.
+- Se algum vídeo de uma playlist ou do seu `links.txt` falhar (privado, removido, etc.), o erro será guardado e listado apenas no final, sem travar o restante da fila.
 
 ## Licença
 

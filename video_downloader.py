@@ -140,20 +140,56 @@ def main():
         print(f'\nAviso: feche o navegador "{cookies_navegador[0]}" antes de continuar, '
               'senao o arquivo de cookies pode estar bloqueado.')
 
-    print('\nTudo pronto! Cole um link por vez para baixar (video ou playlist).')
-    print('Pressione Ctrl+C a qualquer momento para encerrar o programa.')
+    # --- LÓGICA DO ARQUIVO .TXT ---
+    caminho_txt = 'links.txt'
+    modo_manual = True
 
-    try:
-        while True:
-            link_do_video = input('\nCole o link aqui: ').strip()
-            if not link_do_video:
-                print('Nenhum link informado. Tente novamente.')
-                continue
+    if os.path.exists(caminho_txt):
+        usar_txt = input(f'\nArquivo {caminho_txt} encontrado na pasta! Deseja baixar os links listados nele? (s/n): ').strip().lower()
+        if usar_txt == 's':
+            modo_manual = False
+            try:
+                with open(caminho_txt, 'r', encoding='utf-8') as f:
+                    links_arquivo = [linha.strip() for linha in f if linha.strip()]
+                
+                if not links_arquivo:
+                    print(f'\nO arquivo {caminho_txt} esta vazio. Iniciando o modo manual...')
+                    modo_manual = True
+                else:
+                    print(f'\nIniciando o download de {len(links_arquivo)} link(s) a partir de {caminho_txt}...')
+                    for i, link_do_video in enumerate(links_arquivo, 1):
+                        print(f'\n--- Processando link {i}/{len(links_arquivo)} do arquivo ---')
+                        baixar_link(link_do_video, escolha, cookies_navegador)
+                    
+                    print(f'\nTodos os links do {caminho_txt} foram processados!')
+                    
+                    continuar = input('\nDeseja continuar baixando outros links manualmente? (s/n): ').strip().lower()
+                    if continuar == 's':
+                        modo_manual = True
+                    else:
+                        print('\nEncerrando o programa. Ate mais!')
+                        sys.exit(0)
+            except Exception as e:
+                print(f'\nErro ao ler o arquivo {caminho_txt}: {e}')
+                print('Iniciando o modo manual por precaução...')
+                modo_manual = True
 
-            baixar_link(link_do_video, escolha, cookies_navegador)
-    except KeyboardInterrupt:
-        print('\n\nEncerrando o programa. Ate mais!')
-        sys.exit(0)
+    # --- MODO MANUAL (PADRÃO) ---
+    if modo_manual:
+        print('\nTudo pronto! Cole um link por vez para baixar (video ou playlist).')
+        print('Pressione Ctrl+C a qualquer momento para encerrar o programa.')
+
+        try:
+            while True:
+                link_do_video = input('\nCole o link aqui: ').strip()
+                if not link_do_video:
+                    print('Nenhum link informado. Tente novamente.')
+                    continue
+
+                baixar_link(link_do_video, escolha, cookies_navegador)
+        except KeyboardInterrupt:
+            print('\n\nEncerrando o programa. Ate mais!')
+            sys.exit(0)
 
 
 if __name__ == '__main__':
