@@ -5,7 +5,7 @@ Script em Python para baixar vídeos e playlists do YouTube, com opção de salv
 ## Funcionalidades
 
 - Reconhece automaticamente se o link informado é de uma playlist ou de um vídeo individual.
-- **[NOVO] Download em Lote (`links.txt`):** Adicione um arquivo de texto na pasta do projeto contendo um link por linha. O programa reconhece o arquivo automaticamente e processa toda a fila de downloads sequencialmente.
+- Download em Lote (`links.txt`): Adicione um arquivo de texto na pasta do projeto contendo um link por linha. O programa reconhece o arquivo automaticamente e processa toda a fila de downloads sequencialmente.
 - Playlists são salvas em uma pasta com o nome da playlist, dentro do diretório `Downloads` do usuário.
 - Vídeo: baixado em `MP4`, combinando a melhor faixa de vídeo e a melhor faixa de áudio disponíveis quando o FFmpeg está instalado.
 - Áudio: extraído e convertido para `MP3` a 192kbps.
