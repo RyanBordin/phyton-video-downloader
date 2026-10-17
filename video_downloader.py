@@ -10,29 +10,40 @@ import yt_dlp  # Biblioteca de download de videos
 
 DOWNLOADS_DIR = os.path.expanduser('~/Downloads')
 LOGS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logs')
+CAMINHO_LOG = os.path.join(LOGS_DIR, 'video_downloader.log')
 
 log = logging.getLogger('video_downloader')
 
 
-def configurar_log() -> str:
-    """Cria um arquivo de log novo para esta sessao dentro de 'logs/' na pasta do projeto.
-    Cada sessao tem seu proprio arquivo, que so recebe novas linhas (nunca e sobrescrito)."""
-    os.makedirs(LOGS_DIR, exist_ok=True)
-    nome_arquivo = datetime.now().strftime('sessao_%Y-%m-%d_%H-%M-%S.log')
-    caminho_log = os.path.join(LOGS_DIR, nome_arquivo)
+class HandlerQueGravaNaHora(logging.FileHandler):
+    """Grava cada linha no disco imediatamente, para o log nao se perder se o
+    terminal for fechado no meio da sessao."""
 
-    handler = logging.FileHandler(caminho_log, mode='a', encoding='utf-8')
+    def emit(self, record):
+        super().emit(record)
+        os.fsync(self.stream.fileno())
+
+
+def configurar_log() -> str:
+    """Abre o arquivo de log unico do projeto ('logs/video_downloader.log').
+    Cada sessao e acrescentada ao final, mantendo o historico das anteriores."""
+    os.makedirs(LOGS_DIR, exist_ok=True)
+
+    handler = HandlerQueGravaNaHora(CAMINHO_LOG, mode='a', encoding='utf-8')
     handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
     log.addHandler(handler)
     log.setLevel(logging.DEBUG)
 
-    log.info('=== Inicio da sessao ===')
+    id_sessao = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    log.info('=' * 70)
+    log.info('=== Inicio da sessao %s (PID %d) ===', id_sessao, os.getpid())
+    log.info('Executavel: %s', sys.executable)
     log.info('Sistema: %s | Python %s', platform.platform(), sys.version.split()[0])
     log.info('yt-dlp: %s', yt_dlp.version.__version__)
     log.info('FFmpeg: %s', shutil.which('ffmpeg') or 'nao encontrado')
     log.info('Deno: %s', shutil.which('deno') or 'nao encontrado')
     log.info('Pasta de downloads: %s', DOWNLOADS_DIR)
-    return caminho_log
+    return CAMINHO_LOG
 
 
 def deve_baixar_playlist(link_do_video: str) -> bool:
@@ -287,7 +298,7 @@ def main():
 
 if __name__ == '__main__':
     caminho_log = configurar_log()
-    print(f'Log desta sessao: {caminho_log}\n')
+    print(f'Log: {caminho_log}\n')
     try:
         main()
     except KeyboardInterrupt:

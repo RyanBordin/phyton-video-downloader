@@ -76,14 +76,14 @@ Se não houver um `links.txt` na pasta ou se você digitar `n` na detecção:
 
 ## Logs de sessão
 
-Cada execução cria um arquivo novo em `logs/` (na pasta do projeto), com nome `sessao_AAAA-MM-DD_HH-MM-SS.log`. O caminho é exibido logo ao abrir o programa. O arquivo de uma sessão nunca é sobrescrito, apenas recebe novas linhas, e registra:
+Todas as execuções são registradas em um único arquivo, `logs/video_downloader.log` (na pasta do projeto), cujo caminho é exibido logo ao abrir o programa. Cada sessão é acrescentada ao final do arquivo, separada por um cabeçalho com data, hora e PID, mantendo o histórico das sessões anteriores. São registrados:
 
 - Sistema, versão do Python, do yt-dlp e se o FFmpeg/Deno foram encontrados;
 - Opções escolhidas (formato, navegador de cookies, uso do `links.txt`);
 - Cada link processado, as configurações passadas ao yt-dlp e toda a saída dele (exceto as linhas de porcentagem do progresso);
 - Avisos, erros e o traceback completo de qualquer exceção.
 
-Para depurar um problema, basta copiar o conteúdo do log da sessão. Para limpar, apague os arquivos da pasta `logs/` (ela é ignorada pelo Git).
+Para depurar um problema, basta copiar o trecho da sessão desejada. Para limpar, apague o arquivo `logs/video_downloader.log` (a pasta é ignorada pelo Git); ele será recriado na próxima execução.
 
 ## Licença
 
