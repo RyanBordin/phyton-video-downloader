@@ -74,6 +74,17 @@ Se não houver um `links.txt` na pasta ou se você digitar `n` na detecção:
 - Se o FFmpeg não for encontrado, a opção de vídeo baixa uma qualidade combinada menor e a de áudio é bloqueada.
 - Se algum vídeo de uma playlist ou do seu `links.txt` falhar (privado, removido, etc.), o erro será guardado e listado apenas no final, sem travar o restante da fila.
 
+## Logs de sessão
+
+Cada execução cria um arquivo novo em `logs/` (na pasta do projeto), com nome `sessao_AAAA-MM-DD_HH-MM-SS.log`. O caminho é exibido logo ao abrir o programa. O arquivo de uma sessão nunca é sobrescrito, apenas recebe novas linhas, e registra:
+
+- Sistema, versão do Python, do yt-dlp e se o FFmpeg/Deno foram encontrados;
+- Opções escolhidas (formato, navegador de cookies, uso do `links.txt`);
+- Cada link processado, as configurações passadas ao yt-dlp e toda a saída dele (exceto as linhas de porcentagem do progresso);
+- Avisos, erros e o traceback completo de qualquer exceção.
+
+Para depurar um problema, basta copiar o conteúdo do log da sessão. Para limpar, apague os arquivos da pasta `logs/` (ela é ignorada pelo Git).
+
 ## Licença
 
 Sinta-se à vontade para modificar, distribuir e usar este script como base para seus próprios projetos.
