@@ -38,6 +38,19 @@ def localizar_deno():
         return None
 
 
+def localizar_ffmpeg():
+    """Procura o FFmpeg: primeiro no PATH (instalacao do sistema, que costuma vir com o
+    ffprobe), depois no binario que o pacote 'imageio-ffmpeg' do requirements.txt traz."""
+    caminho = shutil.which('ffmpeg')
+    if caminho:
+        return caminho
+    try:
+        import imageio_ffmpeg
+        return imageio_ffmpeg.get_ffmpeg_exe()
+    except (ImportError, RuntimeError):
+        return None
+
+
 def configurar_log() -> str:
     """Abre o arquivo de log unico do projeto ('logs/video_downloader.log').
     Cada sessao e acrescentada ao final, mantendo o historico das anteriores."""
@@ -54,7 +67,7 @@ def configurar_log() -> str:
     log.info('Executavel: %s', sys.executable)
     log.info('Sistema: %s | Python %s', platform.platform(), sys.version.split()[0])
     log.info('yt-dlp: %s', yt_dlp.version.__version__)
-    log.info('FFmpeg: %s', shutil.which('ffmpeg') or 'nao encontrado')
+    log.info('FFmpeg: %s', localizar_ffmpeg() or 'nao encontrado')
     log.info('Deno: %s', localizar_deno() or 'nao encontrado')
     log.info('Pasta de downloads: %s', DOWNLOADS_DIR)
     return CAMINHO_LOG
@@ -101,13 +114,14 @@ def montar_template_de_saida(baixar_playlist: bool) -> str:
 
 def montar_configuracoes(escolha: str, caminho_salvar: str):
     """Monta as configuracoes do yt-dlp de acordo com o formato escolhido."""
-    ffmpeg_path = shutil.which('ffmpeg')
+    ffmpeg_path = localizar_ffmpeg()
 
     if escolha == '1':
         configuracoes = {'outtmpl': caminho_salvar, 'ignoreerrors': True}
         if ffmpeg_path:
             # Com FFmpeg disponivel, baixa o melhor video e o melhor audio
             # separadamente e junta em um unico MP4.
+            configuracoes['ffmpeg_location'] = ffmpeg_path
             configuracoes['format'] = 'bestvideo+bestaudio/best'
             configuracoes['merge_output_format'] = 'mp4'
         else:
@@ -243,7 +257,7 @@ def main():
         log.error('Opcao de formato invalida: %r', escolha)
         sys.exit(1)
 
-    if escolha == '2' and not shutil.which('ffmpeg'):
+    if escolha == '2' and not localizar_ffmpeg():
         print('\nErro: a extracao de audio em MP3 requer o FFmpeg instalado e '
               'disponivel no PATH do sistema.')
         log.error('FFmpeg nao encontrado: extracao de MP3 impossivel')

@@ -8,6 +8,7 @@
 # Versoes do yt-dlp anteriores a 2025.11.12 nao funcionam mais com o YouTube.
 yt-dlp[default,deno]>=2025.11.12
 
-# Dependencia externa (nao instalavel pelo pip, precisa estar no PATH):
-#   FFmpeg -> obrigatorio para MP3 e para juntar video+audio em qualidade maxima.
-#             Windows: winget install ffmpeg | Debian/Ubuntu: sudo apt install ffmpeg
+# FFmpeg (converte para MP3 e junta video+audio em qualidade maxima). O pacote
+# ja traz o executavel; o programa o encontra sozinho. Se houver um FFmpeg
+# instalado no sistema (no PATH), ele tem preferencia.
+imageio-ffmpeg>=0.6.0

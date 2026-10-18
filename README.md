@@ -9,7 +9,7 @@ Script em Python para baixar vídeos e playlists do YouTube, com opção de salv
 - Playlists são salvas em uma pasta com o nome da playlist, dentro do diretório `Downloads` do usuário.
 - Vídeo: baixado em `MP4`, combinando a melhor faixa de vídeo e a melhor faixa de áudio disponíveis quando o FFmpeg está instalado.
 - Áudio: extraído e convertido para `MP3` a 192kbps.
-- Localiza o FFmpeg automaticamente a partir do `PATH` do sistema — não há caminhos fixos no código.
+- Localiza o FFmpeg e o Deno automaticamente (no `PATH` do sistema ou nos pacotes instalados pelo `requirements.txt`) — não há caminhos fixos no código.
 - Em playlists, itens indisponíveis (privados, removidos, etc.) são pulados automaticamente e listados com o motivo ao final, em vez de interromper todo o download.
 - Suporte opcional a cookies do navegador (`--cookies-from-browser` do yt-dlp), para baixar vídeos que exigem login (ex.: restrição de idade).
 - Modo contínuo: Após baixar um item ou processar a fila, o script permite continuar baixando links soltos sem precisar reiniciar o programa. Para encerrar, basta pressionar `Ctrl+C`.
@@ -18,8 +18,8 @@ Script em Python para baixar vídeos e playlists do YouTube, com opção de salv
 ## Pré-requisitos
 
 - Python 3.10 ou superior (exigido pelas versões atuais do yt-dlp)
-- [FFmpeg](https://ffmpeg.org/), necessário para extração de áudio em MP3 e para combinar vídeo e áudio em qualidade máxima
-- [Deno](https://deno.com/), runtime JavaScript que o yt-dlp usa para ler o YouTube; já é instalado automaticamente pelo `requirements.txt`
+
+As demais dependências, incluindo o [FFmpeg](https://ffmpeg.org/) (conversão para MP3 e junção de vídeo e áudio) e o [Deno](https://deno.com/) (runtime JavaScript que o yt-dlp usa para ler o YouTube), são instaladas pelo `requirements.txt`.
 
 ## Instalação
 
@@ -36,16 +36,7 @@ Script em Python para baixar vídeos e playlists do YouTube, com opção de salv
    pip install -r requirements.txt
    ```
 
-3. Instale o FFmpeg e garanta que ele esteja no `PATH` do sistema:
-
-   - **Windows:** `winget install ffmpeg` (ou baixe os binários em [ffmpeg.org](https://ffmpeg.org/download.html) e adicione a pasta `bin` às variáveis de ambiente `PATH`).
-   - **Linux (Debian/Ubuntu):** `sudo apt install ffmpeg`
-   - **Linux (Arch):** `sudo pacman -S ffmpeg`
-   - **macOS:** `brew install ffmpeg`
-
-   Para confirmar que a instalação foi reconhecida, rode `ffmpeg -version` em um terminal novo. Se o comando funcionar, o script encontra o FFmpeg automaticamente — não é necessário editar nada no código.
-
-   O Deno é instalado junto pelo `requirements.txt` e o script o encontra sozinho, mesmo fora do `PATH`. Se você já tiver o Deno instalado no sistema, ele terá preferência. O log da sessão mostra qual Deno foi usado.
+   Isso já instala o FFmpeg e o Deno junto, e o script encontra os dois sozinho, sem precisar configurar o `PATH`. Se você já tiver algum deles instalado no sistema, o do sistema tem preferência. O log da sessão mostra qual foi usado.
 
 ## Como usar
 
@@ -75,7 +66,7 @@ Se não houver um `links.txt` na pasta ou se você digitar `n` na detecção:
 ---
 
 **Erros Comuns:**
-- Se o FFmpeg não for encontrado, a opção de vídeo baixa uma qualidade combinada menor e a de áudio é bloqueada.
+- Se o FFmpeg não for encontrado (por exemplo, se o `requirements.txt` não foi instalado), a opção de vídeo baixa uma qualidade combinada menor e a de áudio é bloqueada.
 - Aviso `No supported JavaScript runtime could be found`: o Deno não foi encontrado; rode novamente `pip install -r requirements.txt`.
 - Se o YouTube parar de funcionar de repente, atualize o yt-dlp: `pip install -U -r requirements.txt`.
 - Se algum vídeo de uma playlist ou do seu `links.txt` falhar (privado, removido, etc.), o erro será guardado e listado apenas no final, sem travar o restante da fila.
