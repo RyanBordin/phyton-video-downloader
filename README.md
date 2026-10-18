@@ -13,6 +13,7 @@ Script em Python para baixar vídeos e playlists do YouTube, com opção de salv
 - Em playlists, itens indisponíveis (privados, removidos, etc.) são pulados automaticamente e listados com o motivo ao final, em vez de interromper todo o download.
 - Suporte opcional a cookies do navegador (`--cookies-from-browser` do yt-dlp), para baixar vídeos que exigem login (ex.: restrição de idade).
 - Modo contínuo: Após baixar um item ou processar a fila, o script permite continuar baixando links soltos sem precisar reiniciar o programa. Para encerrar, basta pressionar `Ctrl+C`.
+- Logs de sessão (`logs/video_downloader.log`): Registra o histórico de todas as execuções em um único arquivo na pasta do projeto (separadas por data, hora e PID), incluindo dados do ambiente (Python, yt-dlp, FFmpeg/Deno), opções escolhidas, links processados, saída do yt-dlp e o traceback completo de eventuais erros.
 
 ## Pré-requisitos
 
@@ -73,15 +74,6 @@ Se não houver um `links.txt` na pasta ou se você digitar `n` na detecção:
 **Erros Comuns:**
 - Se o FFmpeg não for encontrado, a opção de vídeo baixa uma qualidade combinada menor e a de áudio é bloqueada.
 - Se algum vídeo de uma playlist ou do seu `links.txt` falhar (privado, removido, etc.), o erro será guardado e listado apenas no final, sem travar o restante da fila.
-
-## Logs de sessão
-
-Todas as execuções são registradas em um único arquivo, `logs/video_downloader.log` (na pasta do projeto), cujo caminho é exibido logo ao abrir o programa. Cada sessão é acrescentada ao final do arquivo, separada por um cabeçalho com data, hora e PID, mantendo o histórico das sessões anteriores. São registrados:
-
-- Sistema, versão do Python, do yt-dlp e se o FFmpeg/Deno foram encontrados;
-- Opções escolhidas (formato, navegador de cookies, uso do `links.txt`);
-- Cada link processado, as configurações passadas ao yt-dlp e toda a saída dele (exceto as linhas de porcentagem do progresso);
-- Avisos, erros e o traceback completo de qualquer exceção.
 
 Para depurar um problema, basta copiar o trecho da sessão desejada. Para limpar, apague o arquivo `logs/video_downloader.log` (a pasta é ignorada pelo Git); ele será recriado na próxima execução.
 
