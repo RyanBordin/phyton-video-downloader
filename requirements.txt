@@ -1,1 +1,13 @@
-yt-dlp>=2024.1.0
+# Dependencias Python da aplicacao. Instale com: pip install -r requirements.txt
+#
+# yt-dlp[default] -> o proprio yt-dlp + yt-dlp-ejs (scripts que resolvem o
+#                    JavaScript do YouTube), certifi, brotli, websockets,
+#                    mutagen, pycryptodomex e requests.
+# yt-dlp[deno]    -> o runtime JavaScript Deno, instalado pelo pip; o programa
+#                    o encontra sozinho, sem precisar estar no PATH.
+# Versoes do yt-dlp anteriores a 2025.11.12 nao funcionam mais com o YouTube.
+yt-dlp[default,deno]>=2025.11.12
+
+# Dependencia externa (nao instalavel pelo pip, precisa estar no PATH):
+#   FFmpeg -> obrigatorio para MP3 e para juntar video+audio em qualidade maxima.
+#             Windows: winget install ffmpeg | Debian/Ubuntu: sudo apt install ffmpeg

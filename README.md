@@ -17,8 +17,9 @@ Script em Python para baixar vídeos e playlists do YouTube, com opção de salv
 
 ## Pré-requisitos
 
-- Python 3.8 ou superior
+- Python 3.10 ou superior (exigido pelas versões atuais do yt-dlp)
 - [FFmpeg](https://ffmpeg.org/), necessário para extração de áudio em MP3 e para combinar vídeo e áudio em qualidade máxima
+- [Deno](https://deno.com/), runtime JavaScript que o yt-dlp usa para ler o YouTube; já é instalado automaticamente pelo `requirements.txt`
 
 ## Instalação
 
@@ -43,6 +44,8 @@ Script em Python para baixar vídeos e playlists do YouTube, com opção de salv
    - **macOS:** `brew install ffmpeg`
 
    Para confirmar que a instalação foi reconhecida, rode `ffmpeg -version` em um terminal novo. Se o comando funcionar, o script encontra o FFmpeg automaticamente — não é necessário editar nada no código.
+
+   O Deno é instalado junto pelo `requirements.txt` e o script o encontra sozinho, mesmo fora do `PATH`. Se você já tiver o Deno instalado no sistema, ele terá preferência. O log da sessão mostra qual Deno foi usado.
 
 ## Como usar
 
@@ -73,6 +76,8 @@ Se não houver um `links.txt` na pasta ou se você digitar `n` na detecção:
 
 **Erros Comuns:**
 - Se o FFmpeg não for encontrado, a opção de vídeo baixa uma qualidade combinada menor e a de áudio é bloqueada.
+- Aviso `No supported JavaScript runtime could be found`: o Deno não foi encontrado; rode novamente `pip install -r requirements.txt`.
+- Se o YouTube parar de funcionar de repente, atualize o yt-dlp: `pip install -U -r requirements.txt`.
 - Se algum vídeo de uma playlist ou do seu `links.txt` falhar (privado, removido, etc.), o erro será guardado e listado apenas no final, sem travar o restante da fila.
 
 Para depurar um problema, basta copiar o trecho da sessão desejada. Para limpar, apague o arquivo `logs/video_downloader.log` (a pasta é ignorada pelo Git); ele será recriado na próxima execução.

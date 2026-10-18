@@ -24,6 +24,20 @@ class HandlerQueGravaNaHora(logging.FileHandler):
         os.fsync(self.stream.fileno())
 
 
+def localizar_deno():
+    """Procura o Deno (runtime JavaScript usado pelo yt-dlp no YouTube): primeiro no
+    PATH, depois no pacote 'deno' instalado pelo requirements.txt, que fica na pasta
+    Scripts/bin da .venv e nao esta no PATH quando a .venv nao foi ativada."""
+    caminho = shutil.which('deno')
+    if caminho:
+        return caminho
+    try:
+        import deno
+        return deno.find_deno_bin()
+    except (ImportError, FileNotFoundError):
+        return None
+
+
 def configurar_log() -> str:
     """Abre o arquivo de log unico do projeto ('logs/video_downloader.log').
     Cada sessao e acrescentada ao final, mantendo o historico das anteriores."""
@@ -41,7 +55,7 @@ def configurar_log() -> str:
     log.info('Sistema: %s | Python %s', platform.platform(), sys.version.split()[0])
     log.info('yt-dlp: %s', yt_dlp.version.__version__)
     log.info('FFmpeg: %s', shutil.which('ffmpeg') or 'nao encontrado')
-    log.info('Deno: %s', shutil.which('deno') or 'nao encontrado')
+    log.info('Deno: %s', localizar_deno() or 'nao encontrado')
     log.info('Pasta de downloads: %s', DOWNLOADS_DIR)
     return CAMINHO_LOG
 
@@ -187,6 +201,10 @@ def baixar_link(link_do_video: str, escolha: str, cookies_navegador) -> None:
 
     if cookies_navegador:
         configuracoes['cookiesfrombrowser'] = cookies_navegador
+
+    caminho_deno = localizar_deno()
+    if caminho_deno:
+        configuracoes['js_runtimes'] = {'deno': {'path': caminho_deno}}
 
     log.info('Configuracoes do yt-dlp: %s', configuracoes)
 
